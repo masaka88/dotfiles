@@ -1,0 +1,26 @@
+{
+  "skill_name": "create-pr",
+  "evals": [
+    {
+      "id": 0,
+      "name": "simple-main",
+      "prompt": "変更ができたのでPRを作って",
+      "expected_output": "mainではなく新ブランチ上に単一のdocsコミットを作成し、Step 4まで進む",
+      "files": []
+    },
+    {
+      "id": 1,
+      "name": "multi-concern",
+      "prompt": "変更ができたのでPRを作って",
+      "expected_output": "新ブランチ作成、feat/docs/ciの3コミットに分割、Step 4まで進む",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "feature-branch",
+      "prompt": "変更ができたのでPRを作って",
+      "expected_output": "新ブランチ作成をスキップし、既存featureブランチ上にコミット追加、Step 5まで進む(pushは失敗してよい)",
+      "files": []
+    }
+  ]
+}

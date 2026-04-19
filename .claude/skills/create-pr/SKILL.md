@@ -37,6 +37,9 @@ allowed-tools: Bash(git *), Bash(gh pr *)
 
 各コミットが単独で意味を持ち、レビューしやすい単位にする。
 あわせてPR全体を表すブランチ名（`<type>/<short-description>`）も決定する。
+
+**ブランチ名のtype選び**: コミットが複数typeに分かれる場合、PRの主目的（最も中心的な変更）のtypeを採用する。例えば新機能+ドキュメント+CI調整なら `feat/` を使う。PR全体が1つの目的を持つよう命名すること。
+
 分割計画とブランチ名をユーザーに提示して確認を取ってから Step 3 に進む。
 
 ## Step 3: ブランチ作成（mainブランチ上にいる場合）
@@ -58,10 +61,24 @@ git checkout -b <type>/<short-description>
    - `feat:` 新機能 / `fix:` バグ修正 / `refactor:` リファクタリング
    - `style:` フォーマットのみ / `test:` テスト / `docs:` ドキュメント
    - `ci:` CI/CD / `config:` / `chore:` 設定・雑務
+   - **body(本文)の扱い**: 変更理由や背景が非自明なときは1〜2行のbodyを添える。
+     「何をしたか」はheaderで済むので、bodyには「なぜそうしたか」を書く。
+     自明・単純な変更（typo修正など）はheaderのみでよい。
 3. `git commit` を実行
 
 ## Step 5: プッシュ・PR作成
 
 1. プッシュ: `git push -u origin <branch>`
-2. `gh pr create` でPRを作成。本文にはSummaryとTest planを含める
+2. `gh pr create` でPRを作成。PR本文は以下のテンプレートに従う:
+
+   ```markdown
+   ## Summary
+   - <変更点を1-3行の箇条書き。「何を」「なぜ」を簡潔に>
+
+   ## Test plan
+   - [ ] <手動確認の手順やチェック項目を箇条書き>
+   ```
+
+   タイトルはPRの主目的を表すConventional Commits形式（例: `feat: add math_utils module`）。
+
 3. PR URLをユーザーに提示する
