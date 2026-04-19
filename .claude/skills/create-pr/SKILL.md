@@ -7,7 +7,11 @@ allowed-tools: Bash(git *), Bash(gh pr *)
 
 # PR作成ワークフロー
 
-## Step 1: 変更内容の把握
+## Step 1: 現状把握
+
+<current_branch>
+!`git branch --show-current`
+</current_branch>
 
 <current_changes>
 !`git diff --stat`
@@ -20,7 +24,7 @@ allowed-tools: Bash(git *), Bash(gh pr *)
 上記の変更内容を分析し、Step 2に進む。
 追加の詳細が必要なら `git diff` や `git status` を実行して確認する。
 
-## Step 2: コミットの分割計画
+## Step 2: コミット分割計画とブランチ名の決定
 
 変更を論理単位でグループ分けする。分割の判断基準:
 
@@ -32,9 +36,20 @@ allowed-tools: Bash(git *), Bash(gh pr *)
 - **ドキュメント変更** は別コミット
 
 各コミットが単独で意味を持ち、レビューしやすい単位にする。
-分割計画をユーザーに提示して確認を取ってから Step 3 に進む。
+あわせてPR全体を表すブランチ名（`<type>/<short-description>`）も決定する。
+分割計画とブランチ名をユーザーに提示して確認を取ってから Step 3 に進む。
 
-## Step 3: コミットの作成
+## Step 3: ブランチ作成（mainブランチ上にいる場合）
+
+現在のブランチが `main` / `master` の場合は、**コミット作成前に必ず新ブランチを切る**:
+
+```bash
+git checkout -b <type>/<short-description>
+```
+
+すでにfeatureブランチ上にいる場合はこのステップをスキップする。
+
+## Step 4: コミットの作成
 
 グループごとに以下を繰り返す:
 
@@ -45,9 +60,8 @@ allowed-tools: Bash(git *), Bash(gh pr *)
    - `ci:` CI/CD / `config:` / `chore:` 設定・雑務
 3. `git commit` を実行
 
-## Step 4: ブランチ作成・プッシュ・PR作成
+## Step 5: プッシュ・PR作成
 
-1. ブランチを作成: `git checkout -b <type>/<short-description>`
-2. プッシュ: `git push -u origin <branch>`
-3. `gh pr create` でPRを作成。本文にはSummaryとTest planを含める
-4. PR URLをユーザーに提示する
+1. プッシュ: `git push -u origin <branch>`
+2. `gh pr create` でPRを作成。本文にはSummaryとTest planを含める
+3. PR URLをユーザーに提示する
