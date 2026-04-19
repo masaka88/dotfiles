@@ -1,0 +1,51 @@
+{
+  "skill_name": "claude-md",
+  "evals": [
+    {
+      "id": 0,
+      "name": "review-bloated-flutter",
+      "prompt": "このプロジェクトの CLAUDE.md をレビューして。",
+      "expected_output": "Diagnosis table with Keep/Delete/Abstract judgements. Correctly flags derivable, stale, and vague content as Delete. Keeps non-derivable directives. Does NOT auto-write.",
+      "files": ["fixtures/bloated-flutter/"],
+      "assertions": [
+        {"name": "flags-project-overview-as-delete", "criterion": "Marks the 'Project Overview' (Hello World) as Delete, citing derivability or staleness."},
+        {"name": "flags-dependency-platform-lists-as-delete", "criterion": "Marks dependency/platform/architecture lists as Delete, citing pubspec.yaml / directory structure as authoritative."},
+        {"name": "flags-standard-flutter-commands-as-delete", "criterion": "Marks Essential Commands / Development Workflow as Delete, citing standard framework knowledge."},
+        {"name": "flags-vague-advice-as-delete-or-abstract", "criterion": "Flags the Code Style vague advice and Development Notes as Delete or Abstract."},
+        {"name": "keeps-communication-language", "criterion": "Keeps the 'respond in Japanese' directive as non-derivable."},
+        {"name": "does-not-auto-write-fixture", "criterion": "The fixture CLAUDE.md is unchanged after the run."},
+        {"name": "uses-table-format", "criterion": "Output includes a structured table with Section/Judgement/Reason columns (or equivalents)."}
+      ]
+    },
+    {
+      "id": 1,
+      "name": "create-for-node-project",
+      "prompt": "このプロジェクト用に CLAUDE.md を作って。",
+      "expected_output": "Asks language, explores project, captures non-derivable Postgres setup gotcha, produces a lean draft without writing to disk.",
+      "files": ["fixtures/new-node-project/"],
+      "assertions": [
+        {"name": "asks-claude-md-language-first", "criterion": "Transcript shows the skill asked the user which language (JP/EN) before drafting."},
+        {"name": "explores-project-files", "criterion": "Transcript shows reading README.md, package.json, and directory structure before drafting."},
+        {"name": "captures-postgres-setup-gotcha", "criterion": "Draft mentions the non-standard setup step: tests require docker-compose Postgres."},
+        {"name": "excludes-dependency-list", "criterion": "Draft does NOT include a raw dependency list copied from package.json."},
+        {"name": "includes-response-language-directive", "criterion": "Draft instructs Claude to respond in Japanese."},
+        {"name": "under-200-lines", "criterion": "Draft is under 200 lines (the target length documented in SKILL.md); a lean Node project like this should comfortably fit well under that."},
+        {"name": "does-not-auto-write-fixture", "criterion": "No CLAUDE.md written to the fixture directory."}
+      ]
+    },
+    {
+      "id": 2,
+      "name": "review-already-good",
+      "prompt": "CLAUDE.md をレビューして。",
+      "expected_output": "Recognises file is lean; preserves WHY-backed rules; does not invent problems.",
+      "files": ["fixtures/minimal-good/"],
+      "assertions": [
+        {"name": "preserves-nix-shell-gotcha", "criterion": "Does NOT recommend deleting the nix-shell execution constraint."},
+        {"name": "preserves-mock-warning", "criterion": "Does NOT recommend deleting the 'real Postgres not mocks' rule."},
+        {"name": "mostly-keep-verdicts", "criterion": "Marks at least 80% of the sections as Keep; zero or one Delete/Abstract is acceptable for this already-lean file."},
+        {"name": "does-not-invent-problems", "criterion": "Does not introduce speculative concerns absent from the file."},
+        {"name": "does-not-auto-write-fixture", "criterion": "Fixture CLAUDE.md is unchanged."}
+      ]
+    }
+  ]
+}
